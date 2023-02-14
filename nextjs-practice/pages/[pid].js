@@ -3,9 +3,9 @@ import path from "path";
 import { Fragment } from "react";
 
 export default function ProductDetailPage({ loadedProduct }) {
-  // if (!loadedProduct) {
-  //   return <p> Loading...</p>;
-  // }
+  if (!loadedProduct) {
+    return <p> Loading...</p>;
+  }
 
   return (
     <Fragment>
@@ -31,6 +31,12 @@ export async function getStaticProps(context) {
   const data = await getData();
 
   const product = data.products.find((product) => product.id === productId);
+
+  if (!product) {
+    // product가 없는 경우 notFound 페이지로 이동
+    return { notFound: true };
+  }
+
   return {
     props: {
       loadedProduct: product,
@@ -61,7 +67,7 @@ export async function getStaticPaths() {
 
   return {
     paths: pathsWithParams,
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -95,5 +101,6 @@ export async function getStaticPaths() {
  *
  * 'blocking'으로 설정 : 컴포넌트에서 폴백 확인할 필요 XXX
  * => 페이지가 서비스 제공하기 전에 서버에 완전히 사전 생성 되도록 기다림
+ * => if문 필요 XX
  * =>> 응답 시간 길어짐 - 단점
  */
