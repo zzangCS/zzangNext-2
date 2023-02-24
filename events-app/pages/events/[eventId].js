@@ -5,6 +5,7 @@ import EventLogistics from "@/components/event-detail/EventLogistics/EventLogist
 import EventContent from "@/components/event-detail/EventContent/EventContent";
 import ErrorAlert from "@/components/common/ErrorAlert/ErrorAlert";
 import Head from "next/head";
+import Comments from "@/components/input/Comments/Comments";
 
 export default function EventDetailPage({ event }) {
   if (!event) {
@@ -32,6 +33,7 @@ export default function EventDetailPage({ event }) {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
+      <Comments eventId={event.id} />
     </Fragment>
   );
 }
