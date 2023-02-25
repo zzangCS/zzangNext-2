@@ -1,58 +1,58 @@
 import { useRef, useState } from "react";
 import styles from "./NewComment.module.css";
 
-export default function NewComment(props) {
+export default function NewComment({ onAddComment }) {
   const [isInvalid, setIsInvalid] = useState(false);
 
-  const emailInputRef = useRef();
-  const nameInputRef = useRef();
-  const commentInputRef = useRef();
+  const emailRef = useRef();
+  const nameRef = useRef();
+  const commentRef = useRef();
 
-  function sendCommentHandler(event) {
-    event.preventDefault();
+  function sendComment(e) {
+    e.preventDefault();
 
-    const enteredEmail = emailInputRef.current.value;
-    const enteredName = nameInputRef.current.value;
-    const enteredComment = commentInputRef.current.value;
+    const email = emailRef.current.value;
+    const name = nameRef.current.value;
+    const comment = commentRef.current.value;
 
     if (
-      !enteredEmail ||
-      enteredEmail.trim() === "" ||
-      !enteredEmail.includes("@") ||
-      !enteredName ||
-      enteredName.trim() === "" ||
-      !enteredComment ||
-      enteredComment.trim() === ""
+      !email ||
+      email.trim() === "" ||
+      !email.includes("@") ||
+      !name ||
+      name.trim() === "" ||
+      !comment ||
+      comment.trim() === ""
     ) {
       setIsInvalid(true);
       return;
     }
 
-    props.onAddComment({
-      email: enteredEmail,
-      name: enteredName,
-      text: enteredComment,
-    });
+    onAddComment({ emailText, nameText, text });
+
+    emailRef.current.value = "";
+    nameRef.current.value = "";
+    commentRef.current.value = "";
   }
 
   return (
-    <form className={styles.form}>
+    <form className={styles.form} onSubmit={sendComment}>
       <div className={styles.row}>
         <div className={styles.control}>
           <label htmlFor="email">Your email</label>
-          <input type="email" id="email" ref={emailInputRef} />
+          <input type="email" id="email" ref={emailRef} />
         </div>
         <div className={styles.control}>
           <label htmlFor="name">Your name</label>
-          <input type="text" id="name" ref={nameInputRef} />
+          <input type="text" id="name" ref={nameRef} />
         </div>
       </div>
       <div className={styles.control}>
         <label htmlFor="comment">Your comment</label>
-        <textarea id="comment" rows="5" ref={commentInputRef}></textarea>
+        <textarea id="comment" rows="5" ref={commentRef}></textarea>
       </div>
       {isInvalid && <p>Please enter a valid email address and comment!</p>}
-      <button>Submit</button>
+      <button type="submit">Submit</button>
     </form>
   );
 }
