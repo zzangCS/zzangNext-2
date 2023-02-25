@@ -13,7 +13,7 @@ export default function NewComment({ onAddComment }) {
 
     const email = emailRef.current.value;
     const name = nameRef.current.value;
-    const comment = commentRef.current.value;
+    const text = commentRef.current.value;
 
     if (
       !email ||
@@ -21,14 +21,14 @@ export default function NewComment({ onAddComment }) {
       !email.includes("@") ||
       !name ||
       name.trim() === "" ||
-      !comment ||
-      comment.trim() === ""
+      !text ||
+      text.trim() === ""
     ) {
       setIsInvalid(true);
       return;
     }
 
-    onAddComment({ emailText, nameText, text });
+    onAddComment({ email, name, text });
 
     emailRef.current.value = "";
     nameRef.current.value = "";
@@ -39,20 +39,20 @@ export default function NewComment({ onAddComment }) {
     <form className={styles.form} onSubmit={sendComment}>
       <div className={styles.row}>
         <div className={styles.control}>
-          <label htmlFor="email">Your email</label>
-          <input type="email" id="email" ref={emailRef} />
+          <label htmlFor='email'>Your email</label>
+          <input type='email' id='email' ref={emailRef} />
         </div>
         <div className={styles.control}>
-          <label htmlFor="name">Your name</label>
-          <input type="text" id="name" ref={nameRef} />
+          <label htmlFor='name'>Your name</label>
+          <input type='text' id='name' ref={nameRef} />
         </div>
       </div>
       <div className={styles.control}>
-        <label htmlFor="comment">Your comment</label>
-        <textarea id="comment" rows="5" ref={commentRef}></textarea>
+        <label htmlFor='comment'>Your comment</label>
+        <textarea id='comment' rows='5' ref={commentRef}></textarea>
       </div>
       {isInvalid && <p>Please enter a valid email address and comment!</p>}
-      <button type="submit">Submit</button>
+      <button type='submit'>Submit</button>
     </form>
   );
 }

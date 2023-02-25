@@ -1,19 +1,20 @@
-import fs from "fs";
-import path from "path";
+import { COMMENTS } from "@/const/db";
+import {
+  connectDatabase,
+  getAllDocuments,
+  insertDocument,
+} from "@/helpers/db-util";
 
-export function buildCommentPath() {
-  return path.join(process.cwd(), "data", "comments.json");
-}
-
-export function extractComment(filePath) {
-  const fileData = fs.readFileSync(filePath);
-  const data = JSON.parse(fileData);
-
-  return data;
-}
-
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const eventId = req.query.eventId;
+  let client;
+
+  try {
+    client = await connectDatabase();
+  } catch (error) {
+    res.status(500).json({ message: "Database에 연결을 실패하였습니다." });
+    return;
+  }
 
   if (req.method === "POST") {
     const { email, name, text } = req.body;
@@ -30,17 +31,26 @@ export default function handler(req, res) {
       return;
     }
 
-    const newComment = { id: new Date().toISOString(), email, name, text };
+    const newComment = { email, name, text, eventId };
 
-    const filePath = buildCommentPath();
-    const data = extractComment(filePath);
-    data.push(newComment);
-    fs.writeFileSync(filePath, JSON.stringify(data));
-    res.status(201).json({ message: "Success!", comments: newComment });
+    let result;
+    try {
+      result = await insertDocument(client, COMMENTS, newComment);
+      newComment._id = result.insertedId;
+      res.status(201).json({ message: "Success!", comments: newComment });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "댓글을 등록할 수 없습니다." });
+    }
   }
+
+  let documents;
   if (req.method === "GET") {
-    const filePath = buildCommentPath();
-    const commentsData = extractComment(filePath);
-    res.status(200).json({ comments: commentsData });
+    try {
+      documents = await getAllDocuments(client, COMMENTS, { _id: -1 });
+      res.status(200).json({ comments: documents });
+    } catch (error) {
+      res.status(500).json({ message: "댓글을 불러올 수 없습니다." });
+    }
   }
 }
