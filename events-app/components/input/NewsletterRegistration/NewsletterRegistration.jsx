@@ -20,7 +20,6 @@ export default function NewsletterRegistration() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        emailRef.current.value = "";
       });
   }
 
@@ -30,13 +29,13 @@ export default function NewsletterRegistration() {
       <form onSubmit={onRegister}>
         <div className={styles.control}>
           <input
-            type="email"
-            id="email"
-            placeholder="Your email"
-            aria-label="Your email"
+            type='email'
+            id='email'
+            placeholder='Your email'
+            aria-label='Your email'
             ref={emailRef}
           />
-          <button type="submit">Register</button>
+          <button type='submit'>Register</button>
         </div>
       </form>
     </section>

@@ -5,7 +5,7 @@ export default function CommentList({ comments }) {
     <ul className={styles.comments}>
       {comments &&
         comments.map((comment) => (
-          <li key={comment.id}>
+          <li key={comment._id}>
             <p>{comment.text}</p>
             <div>
               By <address>{comment.name}</address>
