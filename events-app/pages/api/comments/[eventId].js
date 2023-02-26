@@ -39,7 +39,6 @@ export default async function handler(req, res) {
       newComment._id = result.insertedId;
       res.status(201).json({ message: "Success!", comments: newComment });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ message: "댓글을 등록할 수 없습니다." });
     }
   }

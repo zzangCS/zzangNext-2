@@ -1,7 +1,9 @@
-import { useRef } from "react";
+import { NotificationContext } from "@/store/notificationContext";
+import { useContext, useRef } from "react";
 import styles from "./NewsletterRegistration.module.css";
 
 export default function NewsletterRegistration() {
+  const { showNotification } = useContext(NotificationContext);
   const emailRef = useRef();
 
   function onRegister(e) {
@@ -10,6 +12,12 @@ export default function NewsletterRegistration() {
     const email = emailRef.current.value;
     const newReqEmail = { email };
 
+    showNotification({
+      title: "Sending comment...",
+      message: "Your comment is currently being stored into a database.",
+      status: "pending",
+    });
+
     fetch("/api/newsletter", {
       method: "POST",
       body: JSON.stringify(newReqEmail),
@@ -17,9 +25,30 @@ export default function NewsletterRegistration() {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        res.json().then((data) => {
+          throw new Error(data.message || "Something went wrong!");
+        });
+      })
+      .then(() => {
+        emailRef.current.value = "";
+
+        showNotification({
+          title: "Success!",
+          message: "Successfully registered for newsletter!",
+          status: "success",
+        });
+      })
+      .catch((error) => {
+        showNotification({
+          title: "Error",
+          message: error.message || "Something went wrong!",
+          status: "error",
+        });
       });
   }
 
