@@ -46,6 +46,8 @@ function AuthForm() {
       if (!result.error) {
         // set some auth state.
       }
+      emailRef.current.value = "";
+      passwordRef.current.value = "";
     } else {
       try {
         const result = await createUser(email, password);
